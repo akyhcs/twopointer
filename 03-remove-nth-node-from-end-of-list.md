@@ -227,4 +227,97 @@ left.next = left.next.next;
 ```
 
 This distinction is probably the **most important thing to remember** for this problem.
+------------------------------------------------
+
+Good catch. **In our code, when `n = 2`, after moving `right` 2 times, `right` points to `2`, not `3`.**
+
+Let's carefully count.
+
+Initial:
+
+```text
+dummy → 1 → 2 → 3 → 4 → 5
+  ↑
+left/right
+```
+
+### Move right once
+
+```java
+right = right.next;
+```
+
+Now:
+
+```text
+dummy → 1 → 2 → 3 → 4 → 5
+  ↑     ↑
+ left  right
+```
+
+`right` → **1**
+
+### Move right twice
+
+```text
+dummy → 1 → 2 → 3 → 4 → 5
+  ↑           ↑
+ left        right
+```
+
+`right` → **2**
+
+So yes:
+
+> **With `n = 2`, after the `for` loop, `right` points to node `2`.**
+
+The important thing is that the **number of links between `left` and `right` is 2**:
+
+```text
+left
+ ↓
+dummy → 1 → 2
+             ↑
+           right
+```
+
+There are two edges:
+
+```text
+dummy → 1     (1)
+      1 → 2   (2)
+```
+
+Then when we move both pointers until:
+
+```java
+right.next == null
+```
+
+they eventually become:
+
+```text
+dummy → 1 → 2 → 3 → 4 → 5
+              ↑         ↑
+             left      right
+```
+
+So `left` ends at **3**, and therefore:
+
+```text
+left.next = 4   ← node to remove
+```
+
+### One subtle terminology point
+
+When we say **"gap = 2"**, we mean the pointers are **2 links apart**, not that there are two nodes sitting between them.
+
+That's why:
+
+```text
+left = dummy
+right = 2
+```
+
+represents a gap of 2.
 
