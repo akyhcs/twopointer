@@ -327,3 +327,150 @@ num = num * 10 + (abbr.charAt(j) - '0');
 ```
 
 to convert each digit character into its numeric value.
+-----------------------------------
+
+return i == word.length() && j == abbr.length(); what will happen if i directly return true ?
+
+If you mean replacing:
+
+```java
+return i == word.length() && j == abbr.length();
+```
+
+with:
+
+```java
+return true;
+```
+
+then **it would be wrong**.
+
+The reason is that reaching the end of the `while` loop does **not necessarily mean the abbreviation is valid**.
+
+### Example 1
+
+```text
+word = "apple"
+abbr = "a4"
+```
+
+Processing:
+
+```text
+'a' → matches
+'4' → skip 4 characters
+```
+
+Now:
+
+```text
+i = 5   // end of word
+j = 2   // end of abbr
+```
+
+Valid → `true`.
+
+---
+
+### But consider:
+
+```text
+word = "apple"
+abbr = "a5"
+```
+
+Processing:
+
+```text
+'a' → matches
+'5' → skip 5
+```
+
+Now:
+
+```text
+i = 6
+j = 2
+```
+
+Notice:
+
+```text
+i > word.length()
+```
+
+The abbreviation tried to skip **more characters than exist**.
+
+The loop stops because:
+
+```java
+i < word.length()
+```
+
+is now false.
+
+If you simply did:
+
+```java
+return true;
+```
+
+you would incorrectly say this is valid.
+
+---
+
+### That's why we check both
+
+```java
+return i == word.length() && j == abbr.length();
+```
+
+It means:
+
+> **Did we consume exactly the entire word AND exactly the entire abbreviation?**
+
+For:
+
+```text
+word = "apple"
+abbr = "a5"
+```
+
+we get:
+
+```text
+i = 6
+word.length() = 5
+
+j = 2
+abbr.length() = 2
+```
+
+So:
+
+```java
+i == word.length()   // false
+j == abbr.length()   // true
+
+false && true
+= false
+```
+
+Therefore:
+
+```text
+"a5" → invalid
+```
+
+### The important idea
+
+Don't think:
+
+> "The loop ended, therefore it's valid."
+
+Think:
+
+> **"The loop ended. Now I need to verify that both strings were consumed exactly."**
+
+That's why the final condition is important.
+
