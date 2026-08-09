@@ -254,3 +254,76 @@ while (j < abbreviation.length()) {
 The **most important thinking step** is recognizing that a sequence of digits represents **one number**, not individual operations.
 
 [1]: https://leetcode.com/problems/valid-word-abbreviation/description/ "Valid Word Abbreviation - LeetCode"
+-------
+Yes. In Java, **you don't need an explicit type cast** here.
+
+```java
+int digit = abbr.charAt(j) - '0';
+```
+
+This works because both:
+
+```java
+abbr.charAt(j)
+```
+
+and
+
+```java
+'0'
+```
+
+are `char`s.
+
+When you perform arithmetic on `char`s, Java **promotes them to `int`** automatically.
+
+### Example
+
+Suppose:
+
+```java
+char c = '7';
+```
+
+Internally:
+
+```text
+'7' → 55
+'0' → 48
+```
+
+So:
+
+```java
+c - '0'
+```
+
+becomes:
+
+```text
+55 - 48 = 7
+```
+
+Therefore:
+
+```java
+int digit = abbr.charAt(j) - '0';
+```
+
+is perfectly valid.
+
+You **don't** need:
+
+```java
+int digit = (int)(abbr.charAt(j) - '0');
+```
+
+In fact, that cast is redundant.
+
+And this is why we use:
+
+```java
+num = num * 10 + (abbr.charAt(j) - '0');
+```
+
+to convert each digit character into its numeric value.
