@@ -290,3 +290,319 @@ return isPalindrome(s, i + 1, j)
 ```
 
 Good catch — the original diagram I gave had the pointer positions right but described the comparison incorrectly.
+
+
+
+----
+Absolutely. The easiest way to understand this is to remember:
+
+> **We are NOT creating a new string.**
+> We are simply moving the `i` or `j` boundary to pretend that one character was deleted.
+
+Let's use:
+
+```text
+s = "abca"
+```
+
+At the first mismatch:
+
+```text
+a b c a
+  ↑ ↑
+  i j
+```
+
+So:
+
+```text
+i = 1   // 'b'
+j = 2   // 'c'
+```
+
+We have:
+
+```text
+b != c
+```
+
+Now we have **two possible deletions**.
+
+---
+
+## 1. `isPalindrome(s, i + 1, j)`
+
+We do:
+
+```java
+isPalindrome(s, i + 1, j)
+```
+
+Since:
+
+```text
+i = 1
+j = 2
+```
+
+we call:
+
+```java
+isPalindrome(s, 2, 2)
+```
+
+The original string is still:
+
+```text
+index:  0 1 2 3
+        a b c a
+```
+
+But our new boundaries are:
+
+```text
+index:  0 1 2 3
+        a b c a
+          ↑
+          i
+          j
+```
+
+We are now checking only:
+
+```text
+index 2 → index 2
+```
+
+which is:
+
+```text
+c
+```
+
+### Why does this represent deleting `b`?
+
+Because we changed:
+
+```text
+i = 1
+```
+
+to:
+
+```text
+i = 2
+```
+
+So we're **skipping index 1 (`b`)**.
+
+Conceptually:
+
+```text
+a b c a
+  X
+```
+
+becomes:
+
+```text
+a c a
+```
+
+And `aca` is a palindrome.
+
+---
+
+# 2. `isPalindrome(s, i, j - 1)`
+
+Now let's try the other possibility.
+
+Original:
+
+```text
+index:  0 1 2 3
+        a b c a
+          ↑ ↑
+          i j
+```
+
+We call:
+
+```java
+isPalindrome(s, i, j - 1)
+```
+
+So:
+
+```java
+isPalindrome(s, 1, 1)
+```
+
+We're checking only:
+
+```text
+b
+```
+
+Why?
+
+Because:
+
+```text
+j - 1
+```
+
+means we're skipping index `2`, which contains `c`.
+
+Conceptually:
+
+```text
+a b c a
+    X
+```
+
+becomes:
+
+```text
+a b a
+```
+
+And `aba` is a palindrome.
+
+---
+
+# The important visualization
+
+Think of `i` and `j` as **boundaries of the part we're checking**.
+
+For:
+
+```text
+a b c a
+0 1 2 3
+```
+
+Mismatch:
+
+```text
+a b c a
+  ↑ ↑
+  i j
+```
+
+We have two possibilities:
+
+### Option 1 — Delete `b`
+
+Move `i` forward:
+
+```text
+        i
+        ↓
+a b c a
+  X
+```
+
+So:
+
+```java
+isPalindrome(s, i + 1, j)
+```
+
+means:
+
+```text
+        ↓
+a b c a
+    c a
+```
+
+We're skipping `b`.
+
+---
+
+### Option 2 — Delete `c`
+
+Move `j` backward:
+
+```text
+    j
+    ↓
+a b c a
+    X
+```
+
+So:
+
+```java
+isPalindrome(s, i, j - 1)
+```
+
+means we're skipping `c`.
+
+---
+
+## Why don't we actually modify the string?
+
+Because modifying the string would be unnecessary.
+
+Instead of doing something like:
+
+```java
+String newString = "aca";
+```
+
+we simply tell our helper:
+
+> "Start checking one position later."
+
+That's what:
+
+```java
+i + 1
+```
+
+does.
+
+And instead of:
+
+```text
+aba
+```
+
+we say:
+
+> "Stop checking one position earlier."
+
+That's what:
+
+```java
+j - 1
+```
+
+does.
+
+So this:
+
+```java
+return isPalindrome(s, i + 1, j)
+        || isPalindrome(s, i, j - 1);
+```
+
+really means:
+
+```text
+             first mismatch
+                  ↓
+              b       c
+              ↑       ↑
+           delete    delete
+             b         c
+             ↓         ↓
+          check aca  check aba
+```
+
+If **either** resulting range is a palindrome, return `true`.
+
+That's why we use `||`.
+
