@@ -191,3 +191,102 @@ If you want to understand this problem deeply, the **most important question is 
 
 [1]: https://leetcode.com/problems/valid-palindrome-ii/description/?utm_source=chatgpt.com "Valid Palindrome II - LeetCode"
 [2]: https://leetcode.doocs.org/en/lc/680/?utm_source=chatgpt.com "680. Valid Palindrome II - LeetCode Wiki"
+-------------
+
+
+
+You're right to question that. **That example was incorrect.**
+
+For:
+
+```text
+a b c a
+↑     ↑
+i     j
+```
+
+we compare:
+
+```java
+s.charAt(i)   vs   s.charAt(j)
+     a               a
+```
+
+So:
+
+```text
+a == a
+```
+
+**NOT** `b != a`.
+
+After that comparison, we move both pointers:
+
+```text
+a b c a
+  ↑   ↑
+  i   j
+```
+
+Now we compare:
+
+```text
+b vs c
+```
+
+and **this** is where:
+
+```text
+b != c
+```
+
+### So the actual flow is
+
+```text
+a b c a
+↑     ↑
+i     j
+
+a == a
+↓
+move i++, j--
+
+a b c a
+  ↑ ↑
+  i j
+
+b != c
+```
+
+Now we have our **first mismatch**.
+
+At this point, we have two choices:
+
+**Delete `b` (left character):**
+
+```text
+a c a
+```
+
+Palindrome ✅
+
+**Delete `c` (right character):**
+
+```text
+a b a
+```
+
+Palindrome ✅
+
+So the important rule is:
+
+> We don't know which character to delete at the mismatch, so we try **either the left character or the right character**.
+
+And that's exactly why we have:
+
+```java
+return isPalindrome(s, i + 1, j)
+        || isPalindrome(s, i, j - 1);
+```
+
+Good catch — the original diagram I gave had the pointer positions right but described the comparison incorrectly.
