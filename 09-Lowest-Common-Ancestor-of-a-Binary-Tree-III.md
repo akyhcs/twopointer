@@ -93,5 +93,116 @@ So this problem can be treated almost exactly like:
 
 > **Find the intersection point of two linked lists.**
 
+----
+
+Sure. Here is the **complete Java code using the two-pointer approach**:
+
+```java
+class Solution {
+
+    public Node lowestCommonAncestor(Node p, Node q) {
+
+        Node a = p;
+        Node b = q;
+
+        while (a != b) {
+
+            if (a == null) {
+                a = q;
+            } else {
+                a = a.parent;
+            }
+
+            if (b == null) {
+                b = p;
+            } else {
+                b = b.parent;
+            }
+        }
+
+        return a;
+    }
+}
+```
+
+### Let's trace it once
+
+Suppose:
+
+```text
+        3
+       / \
+      5   1
+     /
+    6
+```
+
+And:
+
+```text
+p = 6
+q = 1
+```
+
+Initially:
+
+```text
+a = 6
+b = 1
+```
+
+Then:
+
+```text
+a: 6 → 5 → 3 → null → 1 → 3
+b: 1 → 3 → null → 6 → 5 → 3
+```
+
+Eventually:
+
+```text
+a = 3
+b = 3
+```
+
+So:
+
+```java
+while (a != b)
+```
+
+becomes false, and:
+
+```java
+return a;
+```
+
+returns:
+
+```text
+3
+```
+
+### Complexity
+
+```text
+Time  : O(H)
+Space : O(1)
+```
+
+The important pattern to remember is:
+
+```java
+if (a == null)
+    a = q;
+else
+    a = a.parent;
+```
+
+and similarly for `b`.
+
+**When one pointer reaches the root (`null`), make it start from the other node.** This equalizes the distance traveled by the two pointers.
+
+
 That's why the **two-pointer solution works with O(1) extra space**.
 
