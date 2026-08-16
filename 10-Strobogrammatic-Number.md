@@ -434,3 +434,148 @@ That's essentially the entire problem. ([LeetCode][2])
 
 [1]: https://leetcode.com/problems/strobogrammatic-number/?utm_source=chatgpt.com "Strobogrammatic Number - LeetCode"
 [2]: https://leetcode.doocs.org/en/lc/246/?utm_source=chatgpt.com "246. Strobogrammatic Number 🔒 - LeetCode Wiki"
+----------
+Exactly — **we are intentionally not adding `2, 3, 4, 5, 7` because those digits are invalid when rotated 180°**.
+
+The key is: **we are not asking whether the digit exists. We are asking whether the digit has a valid 180° rotation.**
+
+### Think about each digit
+
+If you rotate a digit 180°:
+
+```text
+0 → 0   ✅
+1 → 1   ✅
+2 → ?   ❌
+3 → ?   ❌
+4 → ?   ❌
+5 → ?   ❌
+6 → 9   ✅
+7 → ?   ❌
+8 → 8   ✅
+9 → 6   ✅
+```
+
+So only these five digits survive:
+
+```text
+0, 1, 6, 8, 9
+```
+
+That's why the map contains only:
+
+```java
+map.put('0', '0');
+map.put('1', '1');
+map.put('6', '9');
+map.put('8', '8');
+map.put('9', '6');
+```
+
+### What happens when we encounter `2`?
+
+Suppose:
+
+```text
+num = "12"
+```
+
+Two pointers:
+
+```text
+1 2
+↑ ↑
+L R
+```
+
+We check:
+
+```java
+map.containsKey('1')  // true
+map.get('1') == '2'   // false
+```
+
+So immediately:
+
+```java
+return false;
+```
+
+---
+
+### What about `"23"`?
+
+```text
+2 3
+↑ ↑
+```
+
+We do:
+
+```java
+map.containsKey('2')
+```
+
+This is:
+
+```text
+false
+```
+
+because `2` isn't in our map.
+
+Therefore:
+
+```java
+return false;
+```
+
+So **not putting `2,3,4,5,7` in the map is actually how we represent that they are invalid.**
+
+You can think of the map as:
+
+> **"These are the only digits that I know how to rotate."**
+
+Everything else is automatically rejected.
+
+---
+
+### One important distinction
+
+Don't think:
+
+> "Why don't we map `2 → 2`?"
+
+Because `2` **doesn't look like `2` after a 180° rotation**.
+
+Similarly:
+
+```text
+3 → ?
+4 → ?
+5 → ?
+7 → ?
+```
+
+They don't produce a valid digit.
+
+That's the fundamental observation behind the problem:
+
+```text
+Valid rotation pairs:
+
+0 ↔ 0
+1 ↔ 1
+6 ↔ 9
+8 ↔ 8
+```
+
+and therefore:
+
+```text
+9 ↔ 6
+```
+
+is also represented.
+
+So the map is basically a **lookup table of all possible valid rotations**.
