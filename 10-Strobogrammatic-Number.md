@@ -1,3 +1,68 @@
+Yes, **exactly**. The important realization in this problem is that we only need to consider a **limited set of digits**.
+
+We are not trying to create a mapping for all `0–9`.
+
+We first ask:
+
+> **Which digits can exist in a strobogrammatic number?**
+
+Only:
+
+```text
+0, 1, 6, 8, 9
+```
+
+And their relationships are:
+
+```text
+0 → 0
+1 → 1
+6 → 9
+8 → 8
+9 → 6
+```
+
+So our map contains **only the valid cases**.
+
+Everything else:
+
+```text
+2, 3, 4, 5, 7
+```
+
+is automatically invalid.
+
+### This is a useful problem-solving pattern
+
+Instead of thinking:
+
+> "I have 10 possible digits. How do I handle all 10?"
+
+Think:
+
+> **"What are the only cases that can possibly produce a valid answer?"**
+
+Then encode only those cases.
+
+This is why the solution becomes very simple:
+
+```text
+              Digit
+                |
+       ┌────────┴────────┐
+       ↓                 ↓
+   Valid digit       Invalid digit
+       |                 |
+  0,1,6,8,9        2,3,4,5,7
+       |                 |
+   Check rotation       false
+```
+
+This kind of **restricting the problem to the valid possibilities** is a very common interview technique.
+----------------
+
+
+
 This is **LeetCode 246 — Strobogrammatic Number**. The key idea is actually very similar to the **two-pointer palindrome problems** you've been practicing, except instead of asking:
 
 > `left == right`
